@@ -1,0 +1,6 @@
+main: ml.enoughsdv.region.RegionPlugin
+name: Region
+version: 0.1
+author: Enoughsdv
+api-version: 1.13
+softdepend: ["ProtocolLib"]

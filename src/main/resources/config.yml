@@ -1,0 +1,124 @@
+# +----------------------------------------------------------------------------------------------+ #
+# |                                                                                              | #
+# |                                       STORAGE SETTINGS                                       | #
+# |                                                                                              | #
+# |                                      change storage mode.                                    | #
+# |                                                                                              | #
+# +----------------------------------------------------------------------------------------------+ #
+
+storage:
+  mongodb:
+    normal:
+      host: 127.0.0.1
+      port: 27017
+      database: Regions
+      auth:
+        enabled: false
+        username: ""
+        password: ""
+    uri:
+      enabled: true          
+      database: Regions
+      connection: mongodb://127.0.0.1:27017/Regions
+
+# +----------------------------------------------------------------------------------------------+ #
+# |                                                                                              | #
+# |                                       MENU SETTINGS                                          | #
+# |                                                                                              | #
+# |                                 main menu General settings                                   | #
+# |                                                                                              | #
+# +----------------------------------------------------------------------------------------------+ #
+
+menus:
+  general:
+    next: 
+      item: ARROW
+      title: "&aNext"
+    previous: 
+      item: ARROW
+      title: "&cPrevious"
+  general_regions:
+    item:
+      material: "BOOK"
+      title: "&a%region_display_name%"
+      lores:
+        - "&7Right click to go to the center of the region"
+        - "&7Left click to open the configuration menu"
+  region_settings:
+    item:
+      rename:
+        material: "NAME_TAG"
+        title: "&e&lRename"
+        lores:
+          - "&7Click to rename the region"
+      redefine:
+        material: "WOODEN_AXE"
+        title: "&e&lRedefine"
+        lores:
+          - "&7Click to redefine the region"
+      add_player:
+        material: "PAPER"
+        title: "&a&lAdd player"
+        lores:
+          - "&7Click to add players to the region"
+      remove_player:
+        material: "PAPER"
+        title: "&c&lRemove player"
+        lores:
+          - "&7Click to remove players to the region"
+  players_list:
+    item:
+      title: "&e%player_name%"
+      lores:
+        - "&cClick to remove a player to the region"
+  online_list:
+    item:
+      title: "&a%player_name%"
+      lores:
+        - "&aClick to add a player to the region"
+
+# +----------------------------------------------------------------------------------------------+ #
+# |                                                                                              | #
+# |                                         MESSAGES                                             | #
+# |                                                                                              | #
+# +----------------------------------------------------------------------------------------------+ #
+
+messages:
+  region:
+    exists: "&cThe region already exists"
+    does_not_exist: "&cThe region does not exist"
+    created: "&aThe region %region_name% has been created"
+    deleted: "&eThe region %region_name% was deleted"
+    saved: "&aThe region %region_name% has been saved"
+    claim:
+      inventory_full: "&cYour inventory is full"
+      item_added: "&aThe claim item was added to you"
+      cancelled: "&cClaiming cancelled"
+      teleported: "&aYou were teleported to the center of the region %region_display_name%."
+      location_not_found: "&cLocation not found"
+    rename:
+      seconds: 10
+      message:
+        - "&cYou have %seconds% seconds to set"
+        - "&ca new display name to the region."
+    position:
+        one: "&7Position 1 added &7(&6%location%&7)"
+        two: "&7Position 2 added &7(&6%location%&7)"
+    menu: 
+      region: "&aYou have opened the configuration for the region %region_name%."
+      general: "&aYou have opened the menu of available regions"
+    whitelisted:
+      exists: "&eThe user already exists in the list"
+      does_not_exist: "&cThe user is not in the list"
+      added: "&aUser %target_name% was added to the list"
+      removed: "&eThe user %target_name% has been removed to the list."
+      show_list:
+        header: 
+          - ""
+          - "&eList of Players:"
+          - ""
+        body: "&7• &a%player_name%"
+        footer: 
+          - ""
+  general:
+    no_permissions: "&cYou currently do not have permissions"
