@@ -50,9 +50,6 @@ public class RegionPlugin extends JavaPlugin {
     private void loadCommands() {
         final BukkitCommandHandler commandHandler = BukkitCommandHandler.create(this);
 
-        commandHandler.getTranslator().addResourceBundle("region");
-        commandHandler.getTranslator().setLocale(new Locale("en"));
-
         commandHandler.setHelpWriter((command, actor) -> {
             if (!command.getPermission().canExecute(actor)) {
                 return null;

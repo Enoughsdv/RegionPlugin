@@ -120,5 +120,3 @@ messages:
         body: "&7• &a%player_name%"
         footer: 
           - ""
-  general:
-    no_permissions: "&cYou currently do not have permissions"

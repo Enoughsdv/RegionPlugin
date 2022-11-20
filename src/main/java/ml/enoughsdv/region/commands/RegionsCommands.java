@@ -10,14 +10,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.Command;
-import revxrsal.commands.annotation.Default;
-import revxrsal.commands.annotation.Dependency;
-import revxrsal.commands.annotation.Named;
-import revxrsal.commands.annotation.Optional;
-import revxrsal.commands.annotation.Subcommand;
+import org.jetbrains.annotations.NotNull;
+import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 import revxrsal.commands.bukkit.core.BukkitActor;
+import revxrsal.commands.command.CommandActor;
+import revxrsal.commands.help.CommandHelp;
 
 @Command("region")
 public class RegionsCommands {
@@ -26,7 +24,7 @@ public class RegionsCommands {
     private FileConfiguration config;
     private final RegionPlugin plugin;
 
-    public RegionsCommands(RegionPlugin plugin) {
+    public RegionsCommands(@NotNull RegionPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -37,7 +35,6 @@ public class RegionsCommands {
             GeneralRegionsMenu.getInventory().open(player);
             player.sendMessage(MessageUtil
                     .translate(config.getString("messages.region.menu.general")));
-
             return;
         }
 
@@ -47,7 +44,19 @@ public class RegionsCommands {
         new RegionMenu(region).getInventory().open(player);
     }
 
+    @Subcommand("help")
+    @Description("Show help message")
+    public void help(CommandActor actor, CommandHelp<String> helpEntries, @Default("1") int page) {
+        if (page <= 0) { //fixing error
+            shotHelpMessage(actor, helpEntries, page, 10);
+            return;
+        }
+
+        shotHelpMessage(actor, helpEntries, page, 10);
+    }
+
     @Subcommand("create")
+    @Usage("<name>, <displayName>")
     @CommandPermission("region.create")
     public void regionCreateCommand(BukkitActor actor,
             @Named("name") String name,
@@ -74,6 +83,7 @@ public class RegionsCommands {
     }
 
     @Subcommand("delete")
+    @Usage("<region>")
     @CommandPermission("region.delete")
     public void regionDeleteCommand(BukkitActor actor, @Named("region") Region region) {
         actor.reply(config.getString("messages.region.deleted")
@@ -82,48 +92,16 @@ public class RegionsCommands {
         region.delete(true);
     }
 
-    @Subcommand({"region wand", "region claim"})
+    @Subcommand({"wand", "claim"})
+    @Usage("<region>")
     @CommandPermission("region.create")
     public void regionWandCommand(Player player, @Named("region") Region region) {
         plugin.getClaimHandler().claimToggle(player, region);
     }
 
-    @Subcommand("region whitelist add")
-    @CommandPermission("region.add")
-    public void regionAddCommand(BukkitActor actor,
-            @Named("region") Region region,
-            @Named("target") OfflinePlayer target) {
-
-        if (region.getPlayers().contains(target.getUniqueId())) {
-            actor.reply(config
-                    .getString("messages.region.whitelisted.exists"));
-            return;
-        }
-
-        region.getPlayers().add(target.getUniqueId());
-        actor.reply(config
-                .getString("messages.region.whitelisted.added").replace("%target_name%", target.getName()));
-    }
-
-    @Subcommand("region whitelist remove")
-    @CommandPermission("region.remove")
-    public void regionRemoveCommand(BukkitActor actor,
-            @Named("region") Region region,
-            @Named("target") OfflinePlayer target) {
-
-        if (!region.getPlayers().contains(target.getUniqueId())) {
-            actor.reply(config
-                    .getString("messages.region.whitelisted.does_not_exist"));
-            return;
-        }
-
-        region.getPlayers().remove(target.getUniqueId());
-        actor.reply(config.getString("messages.region.whitelisted.removed")
-                .replace("%target_name%", target.getName()));
-    }
-
-    @Subcommand("region whitelist")
-    @CommandPermission("region.whitelist")
+    @Subcommand("whitelist")
+    @Usage("<region>")
+    @CommandPermission("whitelist")
     public void regionWhitelistCommand(BukkitActor actor, @Named("region") Region region) {
         config.getStringList("messages.region.whitelisted.show_list.header")
                 .forEach(actor::reply);
@@ -142,6 +120,52 @@ public class RegionsCommands {
 
         config.getStringList("messages.region.whitelisted.show_list.footer")
                 .forEach(actor::reply);
+    }
+
+    @Subcommand("whitelist add")
+    @Usage("<region> <target>")
+    @CommandPermission("region.add")
+    public void regionAddCommand(BukkitActor actor,
+            @Named("region") Region region,
+            @Named("target") OfflinePlayer target) {
+
+        if (region.getPlayers().contains(target.getUniqueId())) {
+            actor.reply(config.getString("messages.region.whitelisted.exists"));
+            return;
+        }
+
+        region.getPlayers().add(target.getUniqueId());
+        actor.reply(config.getString("messages.region.whitelisted.added")
+                .replace("%target_name%", target.getName()));
+    }
+
+    @Subcommand("whitelist remove")
+    @Usage("<region> <target>")
+    @CommandPermission("region.remove")
+    public void regionRemoveCommand(BukkitActor actor,
+            @Named("region") Region region,
+            @Named("target") OfflinePlayer target) {
+
+        if (!region.getPlayers().contains(target.getUniqueId())) {
+            actor.reply(config.getString("messages.region.whitelisted.does_not_exist"));
+            return;
+        }
+
+        region.getPlayers().remove(target.getUniqueId());
+        actor.reply(config.getString("messages.region.whitelisted.removed")
+                .replace("%target_name%", target.getName()));
+    }
+
+    private void shotHelpMessage(@NotNull CommandActor actor,
+            @NotNull CommandHelp<String> helpEntries,
+            @NotNull int page,
+            @NotNull int showCommands) {
+
+        actor.reply("&7&m---------------------------");
+        for (String entry : helpEntries.paginate(page, showCommands)) {
+            actor.reply(entry);
+        }
+        actor.reply("&7&m---------------------------");
     }
 
 }
