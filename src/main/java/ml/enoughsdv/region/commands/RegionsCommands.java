@@ -48,11 +48,11 @@ public class RegionsCommands {
     @Description("Show help message")
     public void help(CommandActor actor, CommandHelp<String> helpEntries, @Default("1") int page) {
         if (page <= 0) { //fixing error
-            shotHelpMessage(actor, helpEntries, page, 10);
+            showHelpMessage(actor, helpEntries, page, 10);
             return;
         }
 
-        shotHelpMessage(actor, helpEntries, page, 10);
+        showHelpMessage(actor, helpEntries, page, 10);
     }
 
     @Subcommand("create")
@@ -156,7 +156,7 @@ public class RegionsCommands {
                 .replace("%target_name%", target.getName()));
     }
 
-    private void shotHelpMessage(@NotNull CommandActor actor,
+    private void showHelpMessage(@NotNull CommandActor actor,
             @NotNull CommandHelp<String> helpEntries,
             @NotNull int page,
             @NotNull int showCommands) {
