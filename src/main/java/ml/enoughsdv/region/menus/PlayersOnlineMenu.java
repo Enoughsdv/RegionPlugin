@@ -7,7 +7,6 @@ import ml.enoughsdv.region.menu.content.InventoryContents;
 import ml.enoughsdv.region.menu.content.InventoryProvider;
 import ml.enoughsdv.region.menu.content.Pagination;
 import ml.enoughsdv.region.menu.content.SlotIterator;
-import static ml.enoughsdv.region.menus.GeneralRegionsMenu.INVENTORY;
 import ml.enoughsdv.region.region.Region;
 import ml.enoughsdv.region.utils.ItemBuilder;
 import ml.enoughsdv.region.utils.MessageUtil;
@@ -18,22 +17,13 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 public class PlayersOnlineMenu implements InventoryProvider {
-    
+
     private final FileConfiguration config = RegionPlugin.getInstance().getConfig();
 
     private final Region region;
 
     public PlayersOnlineMenu(Region region) {
         this.region = region;
-    }
-
-    public SmartInventory getInventory() {
-        return SmartInventory.builder()
-                .id("playersOnlineMenu")
-                .provider(new PlayersOnlineMenu(region))
-                .size(5, 9)
-                .title(MessageUtil.translate("&ePlayers Online"))
-                .build();
     }
 
     @Override
@@ -71,13 +61,13 @@ public class PlayersOnlineMenu implements InventoryProvider {
                 .of(new ItemBuilder(XMaterial.valueOf(config
                         .getString("menus.general.next.material")))
                         .title(config.getString("menus.general.next.title")).build(),
-                        e -> INVENTORY.open(player, pagination.previous().getPage())));
+                        e -> getInventory().open(player, pagination.previous().getPage())));
 
         contents.set(3, 3, ClickableItem
                 .of(new ItemBuilder(XMaterial.valueOf(config
                         .getString("menus.general.previous.material")))
                         .title(config.getString("menus.general.previous.title")).build(),
-                        e -> INVENTORY.open(player, pagination.next().getPage())));
+                        e -> getInventory().open(player, pagination.next().getPage())));
     }
 
     @Override
@@ -110,18 +100,27 @@ public class PlayersOnlineMenu implements InventoryProvider {
         pagination.setItemsPerPage(27);
 
         pagination.addToIterator(contents.newIterator(SlotIterator.Type.HORIZONTAL, 0, 0));
-        
+
         contents.set(4, 5, ClickableItem
                 .of(new ItemBuilder(XMaterial.valueOf(config
                         .getString("menus.general.next.material")))
                         .title(config.getString("menus.general.next.title")).build(),
-                        e -> INVENTORY.open(player, pagination.previous().getPage())));
+                        e -> getInventory().open(player, pagination.previous().getPage())));
 
         contents.set(4, 3, ClickableItem
                 .of(new ItemBuilder(XMaterial.valueOf(config
                         .getString("menus.general.previous.material")))
                         .title(config.getString("menus.general.previous.title")).build(),
-                        e -> INVENTORY.open(player, pagination.next().getPage())));
+                        e -> getInventory().open(player, pagination.next().getPage())));
+    }
+
+    public SmartInventory getInventory() {
+        return SmartInventory.builder()
+                .id("playersOnlineMenu")
+                .provider(new PlayersOnlineMenu(region))
+                .size(5, 9)
+                .title(MessageUtil.translate("&ePlayers Online"))
+                .build();
     }
 
 }

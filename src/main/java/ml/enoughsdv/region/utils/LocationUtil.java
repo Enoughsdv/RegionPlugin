@@ -4,15 +4,13 @@ import lombok.experimental.UtilityClass;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.jetbrains.annotations.NotNull;
 
 @UtilityClass
 public class LocationUtil {
 
-    public String parseToString(org.bukkit.Location location) {
-        if (location == null) {
-            return null;
-        }
-
+    @NotNull
+    public String parseToString(@NotNull org.bukkit.Location location) {
         return location.getX() + ", "
                 + location.getY() + ", "
                 + location.getZ() + ", "
@@ -21,11 +19,8 @@ public class LocationUtil {
                 + location.getWorld().getName();
     }
 
-    public Location parseToLocation(String string) {
-        if (string == null) {
-            return null;
-        }
-
+    @NotNull
+    public Location parseToLocation(@NotNull String string) {
         String[] data = string.split(", ");
 
         try {

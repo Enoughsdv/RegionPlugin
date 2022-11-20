@@ -1,24 +1,23 @@
 package ml.enoughsdv.region;
 
+import java.util.Locale;
 import lombok.Getter;
-import me.vaperion.blade.Blade;
-import me.vaperion.blade.bukkit.BladeBukkitPlatform;
 import ml.enoughsdv.region.claim.ClaimHandler;
-import ml.enoughsdv.region.commands.RegionCommands;
+import ml.enoughsdv.region.commands.RegionsCommands;
 import ml.enoughsdv.region.commands.arguments.RegionArgument;
 import ml.enoughsdv.region.database.MongoHandler;
 import ml.enoughsdv.region.listeners.ClaimListener;
-import ml.enoughsdv.region.listeners.PlayerChatListener;
-import ml.enoughsdv.region.listeners.PlayerDisconnectListener;
+import ml.enoughsdv.region.listeners.CountdownListener;
 import ml.enoughsdv.region.listeners.PlayerInteractListener;
 import ml.enoughsdv.region.menu.InventoryManager;
 import ml.enoughsdv.region.region.Region;
 import ml.enoughsdv.region.region.RegionHandler;
-import ml.enoughsdv.region.utils.MessageUtil;
 import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import revxrsal.commands.bukkit.BukkitCommandHandler;
 
 @Getter
 public class RegionPlugin extends JavaPlugin {
@@ -49,23 +48,32 @@ public class RegionPlugin extends JavaPlugin {
     }
 
     private void loadCommands() {
-        Blade.forPlatform(new BladeBukkitPlatform(this))
-                .config(config -> {
-                    config.setFallbackPrefix("region");
-                    config.setOverrideCommands(true);
-                    config.setDefaultPermissionMessage(MessageUtil.translate(this.getConfig()
-                            .getString("messages.general.no_permissions")));
-                    config.setExecutionTimeWarningThreshold(10L);
-                })
-                .bind(binder -> {
-                    binder.bind(Region.class, new RegionArgument(this));
-                })
-                .build()
-                .register(new RegionCommands(this, getConfig()));
+        final BukkitCommandHandler commandHandler = BukkitCommandHandler.create(this);
+
+        commandHandler.getTranslator().addResourceBundle("region");
+        commandHandler.getTranslator().setLocale(new Locale("en"));
+
+        commandHandler.setHelpWriter((command, actor) -> {
+            if (!command.getPermission().canExecute(actor)) {
+                return null;
+            } else {
+                return String.format("&7• &e/%s %s &7- %s",
+                        command.getPath().toRealString(), command.getUsage(),
+                        command.getDescription());
+            }
+        });
+
+        commandHandler.registerDependency(FileConfiguration.class, this.getConfig());
+
+        commandHandler.registerValueResolver(Region.class, new RegionArgument(this));
+        commandHandler.getAutoCompleter()
+                .registerParameterSuggestions(Region.class, new RegionArgument(this));
+
+        commandHandler.register(new RegionsCommands(this));
     }
 
     private void loadListeners() {
-        registerListeners(new PlayerChatListener(), new PlayerDisconnectListener(),
+        registerListeners(new CountdownListener(),
                 new ClaimListener(this, claimHandler), new PlayerInteractListener(this));
     }
 

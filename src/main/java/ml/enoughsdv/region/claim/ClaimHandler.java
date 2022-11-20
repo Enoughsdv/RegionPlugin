@@ -12,18 +12,18 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.jetbrains.annotations.NotNull;
 
 public class ClaimHandler {
 
     private final RegionPlugin plugin;
     private final Map<UUID, Claim> claimHandlerMap = new HashMap<>();
 
-    public ClaimHandler(RegionPlugin plugin) {
+    public ClaimHandler(@NotNull RegionPlugin plugin) {
         this.plugin = plugin;
     }
 
-    public void claimToggle(Player player, Region region) {
-
+    public void claimToggle(@NotNull Player player, @NotNull Region region) {
         if (!claimHandlerMap.containsKey(player.getUniqueId())) {
             PlayerInventory inventory = player.getInventory();
             if (inventory.contains(getClaimWand())) {
@@ -48,27 +48,22 @@ public class ClaimHandler {
         region.save(true);
         claimHandlerMap.remove(player.getUniqueId());
         player.getInventory().remove(getClaimWand());
-        player.sendMessage(MessageUtil.translate(plugin.getConfig().getString("messages.region.saved")
+        player.sendMessage(MessageUtil.translate(plugin.getConfig()
+                .getString("messages.region.saved")
                 .replace("%region_name%", region.getName())));
 
     }
-    
+
     public ItemStack getClaimWand() {
         return new ItemBuilder(XMaterial.DIAMOND_HOE)
-            .title("&cClaim Wand")
-            .lores("&7Left click to set position 1")
-            .lores("&7Righ click to set position 2")
-            .enchantment(Enchantment.DURABILITY, 9)
-            .build();
+                .title("&cClaim Wand")
+                .lores("&7Left click to set position 1")
+                .lores("&7Righ click to set position 2")
+                .enchantment(Enchantment.DURABILITY, 9)
+                .build();
     }
 
-//    public static final ItemStack CLAIM_WAND = new ItemBuilder(XMaterial.DIAMOND_HOE)
-//            .title("&cClaim Wand")
-//            .lores("&7Left click to set position 1")
-//            .lores("&7Righ click to set position 2")
-//            .enchantment(Enchantment.DURABILITY, 9)
-//            .build();
-
+    @NotNull
     public Map<UUID, Claim> getClaimHandlerMap() {
         return claimHandlerMap;
     }

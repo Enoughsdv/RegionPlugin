@@ -12,6 +12,7 @@ import ml.enoughsdv.region.utils.LocationUtil;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.jetbrains.annotations.NotNull;
 
 @Data
 public class Region {
@@ -23,7 +24,7 @@ public class Region {
 
     private MongoHandler mongoHandler = RegionPlugin.getInstance().getMongoHandler();
 
-    public Region(String name) {
+    public Region(@NotNull String name) {
         this.name = name;
         this.players = new ArrayList<>();
 
@@ -47,7 +48,7 @@ public class Region {
         });
     }
 
-    public void save(boolean async) {
+    public void save(@NotNull boolean async) {
         if (async) {
             Bukkit.getScheduler().runTaskAsynchronously(RegionPlugin.getInstance(), () -> save(false));
             return;
@@ -63,7 +64,7 @@ public class Region {
         mongoHandler.getRegions().replaceOne(document, toBson(), new ReplaceOptions().upsert(true));
     }
 
-    public void delete(boolean async) {
+    public void delete(@NotNull boolean async) {
 
         if (async) {
             Bukkit.getScheduler().runTaskAsynchronously(RegionPlugin.getInstance(), () -> delete(false));
@@ -75,10 +76,12 @@ public class Region {
         RegionPlugin.getInstance().getRegionHandler().getRegionMap().remove(name);
     }
 
+    @NotNull
     public Cuboid getCuboid() {
         return new Cuboid(positionOne, positionTwo);
     }
 
+    @NotNull
     public Document toBson() {
         return new Document("_id", name)
                 .append("displayName", displayName)

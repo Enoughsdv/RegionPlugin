@@ -1,48 +1,51 @@
 package ml.enoughsdv.region.commands.arguments;
 
-import java.util.ArrayList;
-import java.util.List;
-import me.vaperion.blade.argument.Argument;
-import me.vaperion.blade.argument.ArgumentProvider;
-import me.vaperion.blade.context.Context;
-import me.vaperion.blade.exception.BladeExitMessage;
 import ml.enoughsdv.region.RegionPlugin;
 import ml.enoughsdv.region.region.Region;
 import ml.enoughsdv.region.utils.MessageUtil;
+
+import revxrsal.commands.autocomplete.SuggestionProvider;
+import revxrsal.commands.command.CommandActor;
+import revxrsal.commands.command.ExecutableCommand;
+import revxrsal.commands.exception.CommandErrorException;
+import revxrsal.commands.process.ValueResolver;
+
 import org.jetbrains.annotations.NotNull;
 
-public class RegionArgument implements ArgumentProvider<Region> {
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+public class RegionArgument implements ValueResolver<Region>, SuggestionProvider {
 
     private final RegionPlugin plugin;
 
-    public RegionArgument(RegionPlugin plugin) {
+    public RegionArgument(@NotNull RegionPlugin plugin) {
         this.plugin = plugin;
     }
 
     @Override
-    public Region provide(@NotNull Context ctx, @NotNull Argument arg) throws BladeExitMessage {
-        Region region = plugin.getRegionHandler().getRegion(arg.getString());
+    public Region resolve(@NotNull ValueResolverContext context) throws Throwable {
+        Region region = plugin.getRegionHandler().getRegion(context.pop());
 
-        if (arg == null || region == null) {
-            throw new BladeExitMessage(MessageUtil.translate(plugin.getConfig()
+        if (context == null || region == null) {
+            throw new CommandErrorException(MessageUtil.translate(plugin.getConfig()
                     .getString("messages.region.does_not_exist", "Region not found!")));
         }
 
         return region;
     }
 
-    @NotNull
     @Override
-    public List<String> suggest(@NotNull Context context, @NotNull Argument arg) throws BladeExitMessage {
-        List<String> list = new ArrayList<>();
+    public Collection<String> getSuggestions(
+            @NotNull List<String> list,
+            @NotNull CommandActor commandActor,
+            @NotNull ExecutableCommand executableCommand) throws Throwable {
 
-        plugin.getRegionHandler().getRegions().forEach(regions -> {
-            if (regions.getName().toLowerCase().startsWith(arg.getString().toLowerCase())) {
-                list.add(regions.getName());
-            }
-        });
+        List<String> listRegion = new ArrayList<>();
 
-        return list;
+        plugin.getRegionHandler().getRegions().forEach(regions -> listRegion.add(regions.getName()));
+        return listRegion;
     }
 
 }

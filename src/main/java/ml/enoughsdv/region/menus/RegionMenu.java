@@ -12,6 +12,7 @@ import ml.enoughsdv.region.utils.CountdownUtil;
 import ml.enoughsdv.region.utils.XMaterial;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class RegionMenu implements InventoryProvider {
 
@@ -19,17 +20,8 @@ public class RegionMenu implements InventoryProvider {
 
     private final Region region;
 
-    public RegionMenu(Region region) {
+    public RegionMenu(@NotNull Region region) {
         this.region = region;
-    }
-
-    public SmartInventory getInventory() {
-        return SmartInventory.builder()
-                .id("regionMenu")
-                .provider(new RegionMenu(region))
-                .size(3, 9)
-                .title(MessageUtil.translate("&eRegion Settings"))
-                .build();
     }
 
     @Override
@@ -86,6 +78,15 @@ public class RegionMenu implements InventoryProvider {
 
     @Override
     public void update(Player player, InventoryContents contents) {
+    }
+
+    public SmartInventory getInventory() {
+        return SmartInventory.builder()
+                .id("regionMenu")
+                .provider(new RegionMenu(region))
+                .size(3, 9)
+                .title(MessageUtil.translate("&eRegion Settings"))
+                .build();
     }
 
 }

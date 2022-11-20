@@ -7,8 +7,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
-public class PlayerChatListener implements Listener {
+public class CountdownListener implements Listener {
+
+    @EventHandler
+    public void onPlayerDisconnect(PlayerQuitEvent event) {
+        CountdownUtil.getCountdownMap().remove(event.getPlayer().getUniqueId());
+    }
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent event) {

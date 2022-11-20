@@ -12,8 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import static org.bukkit.event.block.Action.LEFT_CLICK_BLOCK;
-import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -21,13 +19,17 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+
+import static org.bukkit.event.block.Action.LEFT_CLICK_BLOCK;
+import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
 
 public class ClaimListener implements Listener {
 
     private final RegionPlugin plugin;
     private final ClaimHandler claimHandler;
 
-    public ClaimListener(RegionPlugin plugin, ClaimHandler claimHandler) {
+    public ClaimListener(@NotNull RegionPlugin plugin, @NotNull ClaimHandler claimHandler) {
         this.plugin = plugin;
         this.claimHandler = claimHandler;
     }
@@ -116,8 +118,9 @@ public class ClaimListener implements Listener {
         claimHandler.getClaimHandlerMap().remove(event.getEntity().getUniqueId());
     }
 
-    public boolean isClaimingWand(ItemStack stack) {
-        return stack != null && stack.isSimilar(plugin.getClaimHandler().getClaimWand());
+    @NotNull
+    private boolean isClaimingWand(@NotNull ItemStack stack) {
+        return stack.isSimilar(plugin.getClaimHandler().getClaimWand());
     }
 
 }

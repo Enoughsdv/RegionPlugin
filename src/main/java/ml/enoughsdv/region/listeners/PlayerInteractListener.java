@@ -15,12 +15,13 @@ import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class PlayerInteractListener implements Listener {
 
     private final RegionPlugin plugin;
 
-    public PlayerInteractListener(RegionPlugin plugin) {
+    public PlayerInteractListener(@NotNull RegionPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -41,7 +42,8 @@ public class PlayerInteractListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onHangingPlace(HangingPlaceEvent event) {
-        denyInteract(event.getPlayer(), event, event.getBlock().getRelative(event.getBlockFace()));
+        denyInteract(event.getPlayer(), event, event.getBlock()
+                .getRelative(event.getBlockFace()));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
@@ -54,20 +56,21 @@ public class PlayerInteractListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onBucketEmptyEvent(PlayerBucketEmptyEvent event) {
-        denyInteract(event.getPlayer(), event, event.getBlockClicked().getRelative(event.getBlockFace()));
+        denyInteract(event.getPlayer(), event, event.getBlockClicked()
+                .getRelative(event.getBlockFace()));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onBucketFill(PlayerBucketFillEvent event) {
-        denyInteract(event.getPlayer(), event, event.getBlockClicked().getRelative(event.getBlockFace()));
+        denyInteract(event.getPlayer(), event, event.getBlockClicked()
+                .getRelative(event.getBlockFace()));
     }
 
     private void denyInteract(Player player, Cancellable cancellable, Block block) {
-        //if (player.hasPermission("region.bypass")) return;
-
+        if (player.hasPermission("region.bypass")) return;
         plugin.getRegionHandler().getRegions().stream()
                 .filter(region -> !region.getPlayers().contains(player.getUniqueId()))
-                .filter(region -> region.getCuboid() != null && block != null)
+                .filter(region -> block != null)
                 .filter(region -> region.getCuboid().isIn(block.getLocation()))
                 .forEach(region -> cancellable.setCancelled(true));
     }

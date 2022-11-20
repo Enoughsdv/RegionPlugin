@@ -11,6 +11,7 @@ import ml.enoughsdv.region.region.Region;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 @UtilityClass
 public class CountdownUtil {
@@ -18,7 +19,10 @@ public class CountdownUtil {
     private final Map<UUID, Region> countdownMap = new HashMap<>();
     private final FileConfiguration config = RegionPlugin.getInstance().getConfig();
 
-    public void start(Player player, SmartInventory inventory, Region region) {
+    public void start(@NotNull Player player,
+            @NotNull SmartInventory inventory,
+            @NotNull Region region) {
+
         int seconds = config.getInt("messages.region.rename.seconds");
         config.getStringList("messages.region.rename.message")
                 .stream().map(MessageUtil::translate).forEach(list
@@ -35,17 +39,19 @@ public class CountdownUtil {
         countdownMap.put(player.getUniqueId(), region);
     }
 
-    public void end(Player player, Region region) {
+    public void end(@NotNull Player player, @NotNull Region region) {
         Bukkit.getScheduler().runTask(RegionPlugin.getInstance(), () -> {
             countdownMap.remove(player.getUniqueId());
             new RegionMenu(region).getInventory().open(player);
         });
     }
 
-    public boolean hasMapped(Player player) {
+    @NotNull
+    public boolean hasMapped(@NotNull Player player) {
         return countdownMap.containsKey(player.getUniqueId());
     }
 
+    @NotNull
     public Map<UUID, Region> getCountdownMap() {
         return countdownMap;
     }

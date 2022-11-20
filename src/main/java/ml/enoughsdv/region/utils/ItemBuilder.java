@@ -13,7 +13,6 @@ import org.bukkit.inventory.ItemFlag;
 public class ItemBuilder {
 
     private XMaterial material;
-    private Short durability;
     private String title;
     private int amount = 1;
     private List<String> lores;
@@ -27,7 +26,7 @@ public class ItemBuilder {
 
     public ItemBuilder(XMaterial material) {
         this.enchantments = new HashMap<>();
-        this.itemStack = new ItemStack(material.parseMaterial());
+        this.itemStack = material.parseItem();
     }
 
     public ItemBuilder(ItemStack itemStack) {
@@ -37,11 +36,6 @@ public class ItemBuilder {
 
     public ItemBuilder material(XMaterial material) {
         this.material = material;
-        return this;
-    }
-
-    public ItemBuilder durability(short durability) {
-        this.durability = durability;
         return this;
     }
 
@@ -107,10 +101,6 @@ public class ItemBuilder {
 
         if (this.amount > 0) {
             item.setAmount(this.amount);
-        }
-
-        if (this.durability != null) {
-            item.setDurability(this.durability);
         }
 
         if (this.title != null) {

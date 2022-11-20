@@ -18,13 +18,6 @@ public class GeneralRegionsMenu implements InventoryProvider {
 
     private final FileConfiguration config = RegionPlugin.getInstance().getConfig();
 
-    public static final SmartInventory INVENTORY = SmartInventory.builder()
-            .id("generalRegionsMenu")
-            .provider(new GeneralRegionsMenu())
-            .size(4, 9)
-            .title(MessageUtil.translate("&eList of general regions"))
-            .build();
-
     @Override
     public void init(Player player, InventoryContents contents) {
         Pagination pagination = contents.pagination();
@@ -70,13 +63,13 @@ public class GeneralRegionsMenu implements InventoryProvider {
                 .of(new ItemBuilder(XMaterial.valueOf(config
                         .getString("menus.general.next.material")))
                         .title(config.getString("menus.general.next.title")).build(),
-                        e -> INVENTORY.open(player, pagination.previous().getPage())));
+                        e -> getInventory().open(player, pagination.previous().getPage())));
 
         contents.set(3, 3, ClickableItem
                 .of(new ItemBuilder(XMaterial.valueOf(config
                         .getString("menus.general.previous.material")))
                         .title(config.getString("menus.general.previous.title")).build(),
-                        e -> INVENTORY.open(player, pagination.next().getPage())));
+                        e -> getInventory().open(player, pagination.next().getPage())));
     }
 
     @Override
@@ -125,13 +118,22 @@ public class GeneralRegionsMenu implements InventoryProvider {
                 .of(new ItemBuilder(XMaterial.valueOf(config
                         .getString("menus.general.next.material")))
                         .title(config.getString("menus.general.next.title")).build(),
-                        e -> INVENTORY.open(player, pagination.previous().getPage())));
+                        e -> getInventory().open(player, pagination.previous().getPage())));
 
         contents.set(3, 3, ClickableItem
                 .of(new ItemBuilder(XMaterial.valueOf(config
                         .getString("menus.general.previous.material")))
                         .title(config.getString("menus.general.previous.title")).build(),
-                        e -> INVENTORY.open(player, pagination.next().getPage())));
+                        e -> getInventory().open(player, pagination.next().getPage())));
+    }
+
+    public static SmartInventory getInventory() {
+        return SmartInventory.builder()
+                .id("generalRegionsMenu")
+                .provider(new GeneralRegionsMenu())
+                .size(4, 9)
+                .title(MessageUtil.translate("&eList of general regions"))
+                .build();
     }
 
 }

@@ -3,11 +3,12 @@ package ml.enoughsdv.region.region;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Consumer;
 import lombok.Getter;
 import ml.enoughsdv.region.RegionPlugin;
 import org.bson.Document;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class RegionHandler {
 
@@ -15,7 +16,7 @@ public class RegionHandler {
     private final Map<String, Region> regionMap;
     private final RegionPlugin plugin;
 
-    public RegionHandler(RegionPlugin plugin) {
+    public RegionHandler(@NotNull RegionPlugin plugin) {
         this.plugin = plugin;
         this.regionMap = new HashMap<>();
 
@@ -29,11 +30,13 @@ public class RegionHandler {
         });
     }
 
+    @NotNull
     public Collection<Region> getRegions() {
         return regionMap.values();
     }
 
-    public Region getRegion(String name) {
+    @Nullable
+    public Region getRegion(@NotNull String name) {
         return regionMap.get(name);
     }
 
